@@ -12,12 +12,12 @@ defaults:
     scope:
       path: "" # empty string for all files
     values:
-      title: "P_Chou Tech Space"
+      title: "kula41 Tech Space"
 
-description: "P_Chou Tech Space, share technology post"
+description: "kula41 Tech Space, share technology post"
 author:
-  name: P_Chou
-  email: dbyll@ismaildemirbilek.com
+  name: kula41
+  email: kulafenghen@gmail.com
   github: dbtek
   twitter: dbtek
   pinterest: asd123
