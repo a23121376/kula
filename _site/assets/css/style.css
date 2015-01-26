@@ -1,5 +1,5 @@
 body{
-	background-color: #0066CC;
+	background-color: #191970;
 }
 
 @font-face {
@@ -14,7 +14,7 @@ body{
 
 .sidebar {
 	padding-top: 5%;
-	background-color: #0066CC;
+	background-color: #191970;
 	color: #fff;
 }
 
