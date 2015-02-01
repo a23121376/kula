@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Git学习及下载资源</title>
+	<title>Linux用DD命令测试磁盘读写速度</title>
 	
 	<meta name="author" content="kula41">
 
@@ -117,7 +117,7 @@
 
 	<div class="col-sm-9 typo" style="background-color:#fff;">
 		<div class="col-sm-8" style=" padding: 40px 0; "><div class="page-header">
-  <h1>Git学习及下载资源 </h1>
+  <h1>Linux用DD命令测试磁盘读写速度 </h1>
 </div>
 	
 <article>
@@ -125,29 +125,50 @@
 	<div class="col-sm-12">
   	<small>
 	   
-	   January 
-	   21st,
+	   February 
+	   1st,
 	     
 	   2015
 	 </small>
 	  <div class="article_body" id="article_body">
-	  <p>保存Git源码管理原理学习及下载链接</p>
+	  <p>Linux用DD命令测试磁盘读写速度</p>
 
-<p>Git学习资源 </p>
+<p>　　当然这篇文章是写给我这种小白的，高手请绕路！dd是Linux/UNIX 下的一个非常有用的命令，作用是用指定大小的块拷贝一个文件，并在拷贝的同时进行指定的转换，所以可以用来测试硬盘的读写能力~
+下面直接介绍几种常见的DD命令，先看一下他的区别~</p>
 
-<ul>
-  <li><a href="http://developer.51cto.com/art/201111/302195.htm">http://developer.51cto.com/art/201111/302195.htm</a></li>
-  <li><a href="http://blog.csdn.net/luckarecs/article/details/7427605">http://blog.csdn.net/luckarecs/article/details/7427605</a></li>
-  <li><a href="http://www.open-open.com/lib/list/282?pn=2">http://www.open-open.com/lib/list/282?pn=2</a></li>
-</ul>
+<pre><code>dd bs=64k count=4k if=/dev/zero of=test
+dd bs=64k count=4k if=/dev/zero of=test; sync
+dd bs=64k count=4k if=/dev/zero of=test conv=fdatasync
+dd bs=64k count=4k if=/dev/zero of=test oflag=dsync
+</code></pre>
 
-<p>Git下载链接 </p>
+<p>这四条DD命令区别在于内存中写缓存的处理方式。</p>
 
-<ul>
-  <li><a href="http://msysgit.github.com/">http://msysgit.github.com/</a></li>
-  <li><a href="http://code.google.com/p/gitextensions/downloads/list">http://code.google.com/p/gitextensions/downloads/list</a></li>
-  <li><a href="http://gitscc.codeplex.com/">http://gitscc.codeplex.com/</a></li>
-</ul>
+<h2 id="dd-bs64k-count4k-ifdevzero-oftest">1.dd bs=64k count=4k if=/dev/zero of=test</h2>
+<p>　　没有加任何参数，dd默认的方式不包括“同步(sync)”命令。也就是说，dd命令完成前并没有让系统真正把文件写到磁盘上。所以以上命令只是单纯地把这128MB的数据读到内存缓冲当中（写缓存[write cache]）。所以你得到的将是一个超级快的速度。因为其实dd给你的只是读取速度，直到dd完成后系统才开始真正往磁盘上写数据，但这个速度你是看不到了。所以如果这个速度很快，没有什么作用。
+实际运行结果：
+268435456 bytes (268 MB) copied, 1.3529 seconds, 198 MB/s</p>
+
+<h2 id="dd-bs64k-count4k-ifdevzero-oftest-sync">2.dd bs=64k count=4k if=/dev/zero of=test; sync</h2>
+<p>　　和前面1中的完全一样。分号隔开的只是先后两个独立的命令。当sync命令准备开始往磁盘上真正写入数据的时候，前面dd命令已经把错误的“写入速度”值显示在屏幕上了。所以你还是得不到真正的写入速度。
+实际运行结果：
+268435456 bytes (268 MB) copied, 0.522815 seconds, 513 MB/s</p>
+
+<h2 id="dd-bs64k-count4k-ifdevzero-oftest-convfdatasync">3.dd bs=64k count=4k if=/dev/zero of=test conv=fdatasync</h2>
+<p>　　加入这个参数后，dd命令执行到最后会真正执行一次“同步(sync)”操作，所以这时候你得到的是读取这128M数据到内存并写入到磁盘上所需的时间，这样算出来的时间才是比较符合实际使用结果的。
+实际运行结果：
+268435456 bytes (268 MB) copied, 2.8046 seconds, 95.7 MB/s</p>
+
+<h2 id="dd-bs64k-count4k-ifdevzero-oftest-oflagdsync">4.dd bs=64k count=4k if=/dev/zero of=test oflag=dsync</h2>
+<p>　　加入这个参数后，dd在执行时每次都会进行同步写入操作。也就是说，这条命令每次读取64k后就要先把这64k写入磁盘，然后再读取下面这64k，一共重复128次。这可能是最慢的一种方式了，因为基本上没有用到写缓存(write cache)。
+实际运行结果：
+268435456 bytes (268 MB) copied, 3.40069 seconds, 78.9 MB/s
+　　一般来说，第四种方法是最严格的，可以模拟数据库的插入操作，所以很慢，也是用来测试vps硬盘性能标准的一条标杆，一般来说测试结果，如果超过10M，对正常建站就无影响。超过50M，就是非常给力状态，看了这个vps硬盘性能非常的好，DD速度达到了78.9MB/s。
+　　在这几条命令中，bs=64k表示同时读入/输出的块大小为64k个字节，count=4k表示拷贝块的个数为4000个，如果测试再严格一点，我们运行1G数据量的DD：
+dd if=/dev/zero of=test bs=64k count=16k oflag=dsync
+表示每个块大小为64k个字节，测试16k个数量的块，实际测试结果：
+1073741824 bytes (1.1 GB) copied, 18.9098 seconds, 56.8 MB/s</p>
+
 
 	  </div>
 
@@ -157,8 +178,8 @@
 		  
 		  
 			 
-				<li><a href="/category.html#resource">
-					resource <span>(1)</span>
+				<li><a href="/category.html#hardware">
+					hardware <span>(2)</span>
 					
 				</a></li>
 			
@@ -173,8 +194,15 @@
 		  
 			 
 				<li>
-					<a href="/tag.html#Git">
-					Git <span>(1)</span>
+					<a href="/tag.html#Hardware">
+					Hardware <span>(2)</span>
+					,
+					</a>
+				</li>
+			 
+				<li>
+					<a href="/tag.html#storage">
+					storage <span>(2)</span>
 					
 					</a>
 				</li>
@@ -223,10 +251,10 @@
 
 		<ul class="pager">
 		  
-		  <li class="previous"><a href="/hardware/2015/01/20/storage-raid.html" title="存储技术之RAID">&larr; Previous</a></li>
+		  <li class="previous"><a href="/resource/2015/01/21/git-resource.html" title="Git学习及下载资源">&larr; Previous</a></li>
 		  
 		  
-		  <li class="next"><a href="/hardware/2015/02/01/Linux-dd.html" title="Linux用DD命令测试磁盘读写速度">Next &rarr;</a></li>
+			<li class="next disabled"><a>Next &rarr;</a>
 		  
 		</ul>
 

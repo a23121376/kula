@@ -7,6 +7,52 @@
 		<atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
+				<title>Linux用DD命令测试磁盘读写速度</title>
+				<description>&lt;p&gt;Linux用DD命令测试磁盘读写速度&lt;/p&gt;
+
+&lt;p&gt;　　当然这篇文章是写给我这种小白的，高手请绕路！dd是Linux/UNIX 下的一个非常有用的命令，作用是用指定大小的块拷贝一个文件，并在拷贝的同时进行指定的转换，所以可以用来测试硬盘的读写能力~
+下面直接介绍几种常见的DD命令，先看一下他的区别~&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;dd bs=64k count=4k if=/dev/zero of=test
+dd bs=64k count=4k if=/dev/zero of=test; sync
+dd bs=64k count=4k if=/dev/zero of=test conv=fdatasync
+dd bs=64k count=4k if=/dev/zero of=test oflag=dsync
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这四条DD命令区别在于内存中写缓存的处理方式。&lt;/p&gt;
+
+&lt;h2 id=&quot;dd-bs64k-count4k-ifdevzero-oftest&quot;&gt;1.dd bs=64k count=4k if=/dev/zero of=test&lt;/h2&gt;
+&lt;p&gt;　　没有加任何参数，dd默认的方式不包括“同步(sync)”命令。也就是说，dd命令完成前并没有让系统真正把文件写到磁盘上。所以以上命令只是单纯地把这128MB的数据读到内存缓冲当中（写缓存[write cache]）。所以你得到的将是一个超级快的速度。因为其实dd给你的只是读取速度，直到dd完成后系统才开始真正往磁盘上写数据，但这个速度你是看不到了。所以如果这个速度很快，没有什么作用。
+实际运行结果：
+268435456 bytes (268 MB) copied, 1.3529 seconds, 198 MB/s&lt;/p&gt;
+
+&lt;h2 id=&quot;dd-bs64k-count4k-ifdevzero-oftest-sync&quot;&gt;2.dd bs=64k count=4k if=/dev/zero of=test; sync&lt;/h2&gt;
+&lt;p&gt;　　和前面1中的完全一样。分号隔开的只是先后两个独立的命令。当sync命令准备开始往磁盘上真正写入数据的时候，前面dd命令已经把错误的“写入速度”值显示在屏幕上了。所以你还是得不到真正的写入速度。
+实际运行结果：
+268435456 bytes (268 MB) copied, 0.522815 seconds, 513 MB/s&lt;/p&gt;
+
+&lt;h2 id=&quot;dd-bs64k-count4k-ifdevzero-oftest-convfdatasync&quot;&gt;3.dd bs=64k count=4k if=/dev/zero of=test conv=fdatasync&lt;/h2&gt;
+&lt;p&gt;　　加入这个参数后，dd命令执行到最后会真正执行一次“同步(sync)”操作，所以这时候你得到的是读取这128M数据到内存并写入到磁盘上所需的时间，这样算出来的时间才是比较符合实际使用结果的。
+实际运行结果：
+268435456 bytes (268 MB) copied, 2.8046 seconds, 95.7 MB/s&lt;/p&gt;
+
+&lt;h2 id=&quot;dd-bs64k-count4k-ifdevzero-oftest-oflagdsync&quot;&gt;4.dd bs=64k count=4k if=/dev/zero of=test oflag=dsync&lt;/h2&gt;
+&lt;p&gt;　　加入这个参数后，dd在执行时每次都会进行同步写入操作。也就是说，这条命令每次读取64k后就要先把这64k写入磁盘，然后再读取下面这64k，一共重复128次。这可能是最慢的一种方式了，因为基本上没有用到写缓存(write cache)。
+实际运行结果：
+268435456 bytes (268 MB) copied, 3.40069 seconds, 78.9 MB/s
+　　一般来说，第四种方法是最严格的，可以模拟数据库的插入操作，所以很慢，也是用来测试vps硬盘性能标准的一条标杆，一般来说测试结果，如果超过10M，对正常建站就无影响。超过50M，就是非常给力状态，看了这个vps硬盘性能非常的好，DD速度达到了78.9MB/s。
+　　在这几条命令中，bs=64k表示同时读入/输出的块大小为64k个字节，count=4k表示拷贝块的个数为4000个，如果测试再严格一点，我们运行1G数据量的DD：
+dd if=/dev/zero of=test bs=64k count=16k oflag=dsync
+表示每个块大小为64k个字节，测试16k个数量的块，实际测试结果：
+1073741824 bytes (1.1 GB) copied, 18.9098 seconds, 56.8 MB/s&lt;/p&gt;
+
+</description>
+				<pubDate>Sun, 01 Feb 2015 00:00:00 +0800</pubDate>
+				<link>/hardware/2015/02/01/Linux-dd.html</link>
+				<guid isPermaLink="true">/hardware/2015/02/01/Linux-dd.html</guid>
+			</item>
+		
+			<item>
 				<title>Git学习及下载资源</title>
 				<description>&lt;p&gt;保存Git源码管理原理学习及下载链接&lt;/p&gt;
 
