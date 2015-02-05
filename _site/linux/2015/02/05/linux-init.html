@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>kula41 Tech Space</title>
+	<title>Linux init程序分析</title>
 	
 	<meta name="author" content="kula41">
 
@@ -121,48 +121,21 @@
 
 	<div class="col-sm-9 typo" style="background-color:#fff;">
 		<div class="col-sm-8" style=" padding: 40px 0; "><div class="page-header">
-  <h1>kula41 Tech Space </h1>
+  <h1>Linux init程序分析 </h1>
 </div>
+	
+<article>
 
-<ul class="pager"> 
-
-  
-  <li class="previous disabled">
-    <a>&larr; Newer</a>
-  </li>
-  
-  
-  <li class="hidden-xs">
-    <span class="page_number">Page: 1 of 1</span>
-  </li>
-
-  
-  <li class="next disabled">
-    <a>Older &rarr;</a>        
-  </li>
-  
-
-</ul>
-
-
-
-<article class="home">
-  <small>
-    
-    February
-    5th,
-    
-    2015
-  </small>
-
-  <h2>
-    <a href="/linux/2015/02/05/linux-init.html">Linux init程序分析</a>
-  </h2>
-
-  <p>
-    
-    
-    <p>1、init程序剖析
+	<div class="col-sm-12">
+  	<small>
+	   
+	   February 
+	   5th,
+	   
+	   2015
+	 </small>
+	  <div class="article_body" id="article_body">
+	  <p>1、init程序剖析
     init进程是内核引导过程完成时创建的第一个进程。Linux使用了init进程来对组成Linux的服务和应用程序进行初始化。
     当 init 进程启动时（使用传统的sysvinit版本），它会打开一个名为 /etc/inittab 的文件。这个文件是 init 的配置文件，定义了如何对系统进行初始化。这个文件还包含了有关出现电源故障时执行的操作（如果系统支持）、以及在检测到 Ctrl-Alt-Delete 键序列时应该如何反应的信息。请参看 清单 1 中该文件的简短片段，了解它所提供的内容。
     inittab 配置文件使用通用格式定义了几项内容：id:runlevels:action:process。其中 id 是惟一标识该项的字符序列。runlevels 定义了操作所使用的运行级别。action 指定了要执行的特定操作。最后，process 定义了要执行的进程。
@@ -509,139 +482,130 @@ startx会先记录$HOME下的.xinitrc和.xserverrc文件（如果有的话），
  完整的Linux init程序启动过程如下图：
 </code></pre>
 
+<p>图1 Linux init程序启动过程
+    2、initng介绍
+    由于传统的init进程（sysvinit）是一个串行化的进程，因此可对这部分系统进行充分优化。实际上，您可以使用任何方法来对init进程进行优化。其中最简单方法是禁用不必要的服务。例如，如果您运行的是一个桌面系统（而不是一个服务器），就可以禁用诸如 apache、sendmail 和 mysql 之类的服务，这样可以缩短init序列。
+    其他的一些init程序版本解决了这个问题。一种是基于依赖关系的（即使用依赖关系来提供并行化，如新版的initng），一种是一个基于事件的系统（即进程依赖于事件来表示自己何时启动或停止，如upstart）。
+    initng（下一代 init）可以完全取代异步启动进程的init，它能更加快速地完成init进程。initng 背后的基本思想是只要满足了服务的依赖关系就可启动。这样系统就可以在 CPU 和 I/O 之间实现较好的平衡。当从磁盘上加载一个脚本或等待硬件设备启动的同时，可以运行另一个脚本来启动另外一个服务。
+    作为一个基于依赖关系的解决方案，initng 使用自己的初始化脚本集，它们对服务和守护进程的依赖性进行了编码。清单 2 展示了一个示例。这个脚本指定了需要为给定的运行级别启动的服务。该服务具有两个依赖关系，使用 need 关键字定义，分别是 system/initial 和 net/all。在 system/my_service 可以启动之前，这些服务必须是可用的。当这些服务可用时，exec 关键字就开始起作用了。exec 关键字（以及 start 选项）定义了如何使用任何可用的选项启动服务。要停止这个服务，就会使用 exec 关键字以及 stop 选项。
+清单 2. 为 initng 定义服务
+[python] view plaincopy
+service system/my_service {  </p>
 
-    
-    
-  </p>
+<p>need = system/initial net/all;  </p>
 
+<p>exec start = /sbin/my_service –start –option;<br />
+  exec stop = /sbin/my_service –stop –option;  </p>
+
+<p>}<br />
+    您可以使用服务定义对整个系统进行编码，如清单 2 所示。那些没有依赖关系的服务可以立即（并行地）启动，而具有依赖关系的服务则必须等待以安全启动。您可以将 initng 看作一个基于目标的系统。其目标就是要启动的服务。没有进行显式的规划；相反，依赖关系简单地定义了服务初始化的流程，这个过程中隐含着并行化的操作。
+    initng 的典型安装需要 initng 发行版（源代码或二进制文件）和 ifiles 发行版。您可以使用 ./configure、make 和 make install 编译自己的 initng 发行版。您必须使用 cmake 来编译 ifiles 文件（这是脚本文件）。根据系统需求的不同，您可能需要创建新的服务/守护进程定义（不过很可能 initng 社区中已经有人这样做了）。然后您还必须修改 LILO 或 GRUB 的配置以指向新的 /sbin/initng。要控制 initng，需要使用 ngc（对应telinit 与传统的 init）。它们的语法有些不同，不过功能是相同的。</p>
+
+	  </div>
+
+		
+		<ul class="tag_box list-unstyled list-inline">
+		  <li><i class="fa fa-folder-open"></i></li>
+		  
+		  
+			 
+				<li><a href="/category.html#linux">
+					linux <span>(1)</span>
+					
+				</a></li>
+			
+		  
+		</ul>
+		  
+
+		
+		<ul class="list-inline">
+		  <li><i class="fa fa-tags"></i></li>
+		  
+		  
+			 
+				<li>
+					<a href="/tag.html#init">
+					init <span>(1)</span>
+					
+					</a>
+				</li>
+			
+		  
+		  
+		</ul>
+		  
+
+		<hr>
+
+		<div>
+      <section class="share col-sm-6">
+        <h4 class="section-title">Share Post</h4>
+        <!-- JiaThis Button BEGIN -->
+		<div class="jiathis_style">
+			<a class="jiathis_button_tsina"></a>
+			<a class="jiathis_button_tqq"></a>
+			<a class="jiathis_button_weixin"></a>
+			<a class="jiathis_button_renren"></a>
+			<a class="jiathis_button_douban"></a>
+			<a class="jiathis_button_fb"></a>
+			<a class="jiathis_button_twitter"></a>
+			<a class="jiathis_button_evernote"></a>
+			<a class="jiathis_button_qzone"></a>
+			<a class="jiathis_button_ydnote"></a>
+			<a class="jiathis_button_linkedin"></a>
+			<a href="http://www.jiathis.com/share?uid=1900073" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+			<a class="jiathis_counter_style"></a>
+		</div>
+		<script type="text/javascript">
+		var jiathis_config = {data_track_clickback:'true'};
+		</script>
+		<script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=1900073" charset="utf-8"></script>
+		<!-- JiaThis Button END -->
+      </section>
+
+<!--       <section class="col-sm-6 author">
+        <img src="http://www.gravatar.com/avatar/726351295ec82e145928582f595aa3aa" class="img-rounded author-image" />
+        <h4 class="section-title author-name">kula41</h4>
+        <p class="author-bio">Do not build on quicksand high</p>
+      </section> -->
+    </div>
+
+    <div class="clearfix"></div>
+
+		<ul class="pager">
+		  
+		  <li class="previous"><a href="/hardware/2015/02/01/Linux-dd.html" title="Linux用DD命令测试磁盘读写速度">&larr; Previous</a></li>
+		  
+		  
+			<li class="next disabled"><a>Next &rarr;</a>
+		  
+		</ul>
+
+		<hr>
+	</div>
+	
+<!-- 	<div class="col-sm-2 sidebar-2">
+		
+	</div> -->
+    <div id="disqus_thread"></div>
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'kula41com'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    
 </article>
 
-
-<article class="home">
-  <small>
-    
-    February
-    1st,
-    
-    2015
-  </small>
-
-  <h2>
-    <a href="/hardware/2015/02/01/Linux-dd.html">Linux用DD命令测试磁盘读写速度</a>
-  </h2>
-
-  <p>
-    
-    
-    <p>Linux用DD命令测试磁盘读写速度</p>
-
-
-    
-    
-  </p>
-
-</article>
-
-
-<article class="home">
-  <small>
-    
-    January
-    21st,
-    
-    2015
-  </small>
-
-  <h2>
-    <a href="/resource/2015/01/21/git-resource.html">Git学习及下载资源</a>
-  </h2>
-
-  <p>
-    
-    
-    <p>保存Git源码管理原理学习及下载链接</p>
-
-
-    
-    
-  </p>
-
-</article>
-
-
-<article class="home">
-  <small>
-    
-    January
-    20th,
-    
-    2015
-  </small>
-
-  <h2>
-    <a href="/hardware/2015/01/20/storage-raid.html">存储技术之RAID</a>
-  </h2>
-
-  <p>
-    
-    
-    <p>存储技术如今已经越来越重要，而且在云计算时代，涌现出了很多专注于云存储的厂商。存储技术本身也十分复杂，从硬件到协议到软件到接口几乎覆盖计算机科学的方方面面。笔者借助《大话存储II》这本书，开始了这块知识空白的补充。本文的图片均来源于网络。</p>
-
-
-    
-    
-  </p>
-
-</article>
-
-
-<article class="home">
-  <small>
-    
-    January
-    19th,
-    
-    2015
-  </small>
-
-  <h2>
-    <a href="/life/2015/01/19/hello-github.html">Hello GitHub!</a>
-  </h2>
-
-  <p>
-    
-    
-    <p>github pages： <a href="http://www.ruanyifeng.com/blog/2012/08/blogging_with_jekyll.html">搭建一个免费的，无限流量的Blog—-github Pages和Jekyll入门</a></p>
-
-
-    
-    
-  </p>
-
-</article>
-
-<hr/>
-
-<ul class="pager"> 
-
-  
-  <li class="previous disabled">
-    <a>&larr; Newer</a>
-  </li>
-  
-  
-  <li class="hidden-xs">
-    <span class="page_number">Page: 1 of 1</span>
-  </li>
-
-  
-  <li class="next disabled">
-    <a>Older &rarr;</a>        
-  </li>
-  
-
-</ul>
-
+<div class="clearfix"></div>
 
 </div>
 			<div class="col-sm-4 hidden-xs typo" style=" padding-top: 90px; ">
