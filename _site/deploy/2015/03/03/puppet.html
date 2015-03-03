@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>系列文章</title>
+	<title>使用puppet去部署openstack</title>
 	
 	<meta name="author" content="kula41">
 
@@ -123,7 +123,7 @@
 
 	<div class="col-sm-9 typo" style="background-color:#fff;">
 		<div class="col-sm-8" style=" padding: 40px 0; "><div class="page-header">
-  <h1>系列文章 </h1>
+  <h1>使用puppet去部署openstack </h1>
 </div>
 	
 <article>
@@ -131,13 +131,128 @@
 	<div class="col-sm-12">
   	<small>
 	   
-	    
-	   0th,
-	   
-	   
+	   March 
+	   3rd,
+	     
+	   2015
 	 </small>
 	  <div class="article_body" id="article_body">
-	  
+	  <h1 id="puppetopenstack">使用puppet去部署openstack</h1>
+
+<h2 id="puppet">puppet简介</h2>
+<ul>
+  <li>Puppet是一个IT基础设施自动化管理工具，帮助系统管理员管理基础设施整个生命周期的供应(provisioning),配置(configuration)，联动(orchestration)及报告(reporting)。</li>
+  <li>基于puppet可以实现自动化重复任务，快速部署关键性应用以及在本地或者云端完成主动管理变更和快速部署扩展架构。</li>
+  <li>当然，对于管理员它是抽象的，只依赖于facter工具（可以检索出不同系统的基本信息）和ruby语言环境（主要以模版的形式来开发）。</li>
+  <li>Puppet能管理40多种资源，架构模式是master/agent管理与被管理的关系并非主从关系。
+## puppet工作原理 ##</li>
+  <li>（1）客户端Puppetd向Master发起认证请求，或使用带签名的证书。</li>
+  <li>（2）Master告诉Client你是合法的。</li>
+  <li>（3）客户端Puppetd调用Facter，Facter探测出主机的一些变量，例如主机名、内存大小、IP地址等。Puppetd将这些信息通过SSL连接发送到服务器端。</li>
+  <li>（4）服务器端的PuppetMaster检测客户端的主机名，然后找到manifest对应的node配置，并对该部分内容进行解析。Facter送过来的信息可以作为变量处理，node牵涉到的代码才解析，其他没牵涉的代码不解析。解析分为几个阶段，首先是语法检查，如果语法错误就报错;如果语法没错，就继续解析，解析的结果生成一个中间的“伪代码”(catelog)，然后把伪代码发给客户端。</li>
+  <li>（5）客户端接收到“伪代码”，并且执行。</li>
+  <li>（6）客户端在执行时判断有没有File文件，如果有，则向fileserver发起请求。</li>
+  <li>（7）客户端判断有没有配置Report，如果已配置，则把执行结果发送给服务器。</li>
+  <li>
+    <p>（8）服务器端把客户端的执行结果写入日志，并发送给报告系统。
+## 认证过程 ##
+ 任何一台puppet客户端想要获取服务器的配置信息第一步必须先要认证完毕。具体认证过程如下：</p>
+  </li>
+  <li>（1）puppet客户端请求节点配置。</li>
+  <li>（2）puppetmaster进行SSL认证。</li>
+  <li>（3）将信息日志写入cactlog。</li>
+  <li>（4）puppet解析器解释代码（包括错误检查以及语法检查）,并写入日志。</li>
+  <li>（5）客户端发送日志。</li>
+  <li>
+    <p>（6）ssl认证授权结束，整个流程结束。
+## puppet目录结构 ##
+puppet.conf主配置文件</p>
+  </li>
+  <li>fileserver.conf允许访问的文件控制</li>
+  <li>auth.conf访问权限配置</li>
+  <li>autosign.conf自动验证配置文件</li>
+  <li>manifests文件存储目录(puppet会先读取该目录的.pp文件<site.pp>)</site.pp></li>
+  <li>site.conf全局配置文件</li>
+  <li>modules定义模块</li>
+  <li>templates模块配置目录</li>
+</ul>
+
+<h2 id="section">应用背景：</h2>
+<p>目前puppet官方有根据openstack各种环境编辑好了一整套部署脚本，这一套也已经上传到社区（比如github）给一些相关人士进行维护并更新。我们只要获取那些脚本，在根据我们自己的需求来封装自己的一个类，这个类就是关于怎么调用那些人家已经完善得非常好的各种相关openstack组件模块。</p>
+
+<ul>
+  <li>操作系统：centos6.5</li>
+  <li>Openstack版本：havana icehouse juno</li>
+  <li>
+    <p>Puppet版本：2.7或以上（如果一些脚本需要的话可能要把版本更新到3.x以上的）
+## 安装puppet ##
+  设置源：
+  rpm -ivh http://yum.puppetlabs.com/puppetlabs-release-el-6.noarch.rpm
+  安装：
+  Agent端：yum install puppet
+  Server端：yum install puppet-server
+  获取脚本：
+  puppet module install puppetlabs-openstack
+  下载git上面的脚本：
+  cd /etc/puppet/modules
+  git clone git://github.com/stackforge/puppet-openstack.git openstack
+  cd openstack
+  gem install librarian-puppet
+  librarian-puppet install –path ../
+## openstack模块 ##
+  [root@puppet modules]# tree -L 1
+  .
+  ├── 99cloud
+  ├── apache
+  ├── ceilometer
+  ├── certmonger
+  .
+  .
+  .
+  ├── vlan
+  ├── vswitch
+  └── xinetd</p>
+
+    <p>50 directories, 0 files</p>
+  </li>
+</ul>
+
+<p>在这50个左右的模块里面控制整个openstack流程安装部署的就在openstack这个模块里面，
+在openstack这个模块里面主要是把各个openstack各个组件模块调用起来最后形成了可以灵活地运用各种参数去部署openstack的脚本。这是由于openstack有很多配置文件以及后面要更变配置，所有才有了如此之多的参数。当然，你可以根据自己的需要，比如一些组件你不安装或者一些配置是不需要的，然后自己组成一个模块之类的。
+## 部署 ##
+在自己脚本完成后并测试没有什么语法错误就可以开始部署安装，当然在这之前肯定要经过大量的测试来完善自己的脚本：</p>
+
+<pre><code>There are two kinds of use: 
+---1 
+	stand-alone mode: direct calling scripts
+	allinone #sudo puppet apply -e "class { 99cloud::allinone: }"
+	controller   #sudo puppet apply -e "class { 99cloud::controller: }"
+	only compute #sudo puppet apply -e "class { 99cloud::compute: }"
+---2
+	server-agent mode:
+	a: pick out one end as a service
+	b: edit /etc/puppet/manifests/site.pp (If not,please create)
+	c: depending on the fqdn(hostname+domain) to deploy different nodes
+For your controller node, you need to assign your node the controller role. For example:
+```
+node 'control.localdomain' { 
+	include 99cloud::controller
+}
+```
+allinone:
+include 99cloud::allinone
+```
+compute:
+	include 99cloud::compute
+```
+ d: on your node exec:
+ #puppet agent -t --server 'service of fqdn' 
+</code></pre>
+
+<p>也就是说主要有2种部署方式，一种是单机模式，另一种是C/S模式。如果你的服务器有上几十台以上就需要用到C/S模式，否则尽量用单机模式来部署。这样既节省时间，又方便控制各个服务器。
+从裸机到openstack平台</p>
+
+<p>简而言之，就是先对一台裸机进行PXE（安装系统）之后再利用puppet把openstack平台架起来</p>
 
 	  </div>
 
@@ -146,6 +261,11 @@
 		  <li><i class="fa fa-folder-open"></i></li>
 		  
 		  
+			 
+				<li><a href="/category.html#deploy">
+					deploy <span>(1)</span>
+					
+				</a></li>
 			
 		  
 		</ul>
@@ -156,6 +276,20 @@
 		  <li><i class="fa fa-tags"></i></li>
 		  
 		  
+			 
+				<li>
+					<a href="/tag.html#tool">
+					tool <span>(1)</span>
+					,
+					</a>
+				</li>
+			 
+				<li>
+					<a href="/tag.html#openstack">
+					openstack <span>(1)</span>
+					
+					</a>
+				</li>
 			
 		  
 		  
@@ -201,7 +335,7 @@
 
 		<ul class="pager">
 		  
-		  <li class="previous disabled"><a>&larr; Previous</a></li>
+		  <li class="previous"><a href="/hardware/2015/02/01/Linux-dd.html" title="Linux用DD命令测试磁盘读写速度">&larr; Previous</a></li>
 		  
 		  
 			<li class="next disabled"><a>Next &rarr;</a>
