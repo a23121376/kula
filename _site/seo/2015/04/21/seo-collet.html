@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Linux用DD命令测试磁盘读写速度</title>
+	<title>六大免费网站数据采集器对比</title>
 	
 	<meta name="author" content="kula41">
 
@@ -139,7 +139,7 @@
 
 	<div class="col-sm-9 typo" style="background-color:#fff;">
 		<div class="col-sm-8" style=" padding: 40px 0; "><div class="page-header">
-  <h1>Linux用DD命令测试磁盘读写速度 </h1>
+  <h1>六大免费网站数据采集器对比 </h1>
 </div>
 	
 <article>
@@ -147,50 +147,60 @@
 	<div class="col-sm-12">
   	<small>
 	   
-	   February 
-	   1st,
+	   April 
+	   21st,
 	     
 	   2015
 	 </small>
 	  <div class="article_body" id="article_body">
-	  <p>Linux用DD命令测试磁盘读写速度</p>
+	  <p>六大免费网站数据采集器对比(火车头,海纳,云采集,ET,三人行,狂人采集)</p>
 
-<p>　　当然这篇文章是写给我这种小白的，高手请绕路！dd是Linux/UNIX 下的一个非常有用的命令，作用是用指定大小的块拷贝一个文件，并在拷贝的同时进行指定的转换，所以可以用来测试硬盘的读写能力~
-下面直接介绍几种常见的DD命令，先看一下他的区别~</p>
+<pre><code>1. 火车头
 
-<pre><code>dd bs=64k count=4k if=/dev/zero of=test
-dd bs=64k count=4k if=/dev/zero of=test; sync
-dd bs=64k count=4k if=/dev/zero of=test conv=fdatasync
-dd bs=64k count=4k if=/dev/zero of=test oflag=dsync
+火车头应该是国内采集软件成功的典型之一，使用人数包括收费用户数量上应该是最多的。
+特色：功能强大，速度快，支持的网站最丰富，支持丰富扩展。
+优点：功能齐全，采集速度比较快，主要针对CMS，短时间可以采集很多，过滤，替换都不错，比较详细；很多人写接口、规则和发布模块，接口比较齐全；支持的扩展非常好用，如果你是一位懂技术的站长，可以使用PHP或C#开发任意功能的扩展；附件采集功能完善。
+缺点：采集规则编写对很多站长是个不小的门槛。功能增多，软件越来越大，比较占用内存和CPU资源，资源回收控制得不好。另外，授权绑定计算机，有时很不方便。只能在Windows平台下使用，没有Linux版本。
+技术：技术主要是论坛支持，帮助文件多。有收费、免费版本。
+
+
+2. 海纳
+
+特色：关键词抓取，可以预览采集内容，不用写规则。
+优点：可以抓取网站很多一个关键词文章，似乎适合做网站的专题，特别是文章类、博客类。
+缺点：分类不方便，即采集文章归类不方便，要手动（自动容易混淆），特定接口，采集的内容有限，一次只能采集一条，无法批量采集，需要和网站后台网页对接。安装时，需要海纳的人员上门技术支持，比较麻烦。
+技术：无论坛。收费，免费的功能限制太大，形同鸡肋。
+
+3. 云采集
+
+特色：完美无缝的集合了火车头和海纳的优点，功能强大，速度快，关键词抓取，不用写规则。提供基于网络的接口供第三方调用，创新给力。
+优点：功能强大，不需要写任何规则，软件使用简单，多线程，速度快，可以多个关键词采集，可以批量采集批量入库，傻瓜式采集，可以定时采集和发布，无人值守，适合做网站专题。能够和任意CMS，如PHP、ASP.NET(C#)、JSP、Ruby等开发的CMS紧密整合。和网站后台频道无缝对接，方便文章发布。安装简单，支持Windows和Linux。
+缺点：虽然也较为有名，但与火车头和海纳相比，发展时间相对较短，相对新锐，偶尔采集的内容不太准确，不过很容易校正调整。
+技术：QQ技术支持、论坛、微博。有永久免费版本、收费版本。收费版本也可以通过嵌入代码资源交换方式免费使用，很灵活。
+
+4. ET工具
+
+特色：无人值守，稳定，资源占用最低，基本上可以叫安静。
+优点：无人值守，自动更新，用户群主要集中在长期做站潜水站长。软件清晰，必备功能也很齐全，软件免费，听说已经增加采集中英文翻译功能。
+缺点：对论坛和CMS的支持一般。
+技术：论坛支持，软件本身免费，但是也提供收费服务。帮助文件较少，上手不容易。
+
+5. 三人行
+
+主要针对论坛的采集，功能比较完善。先申明，不知道三人行和狂人是什么关系，但界面和功能都是一个模子出来的。
+特色：针对各大论坛，搬家，移动，速度快，准确度高。
+优点：还是针对论坛，适合开论坛的。
+技术：收费技术，免费有广告。
+缺点：超级复杂，上手难，对CMS支持比较差。
+
+6. 狂人
+
+特色：可以让你的新论坛一开始就会有大量的会员。
+优点：非常适合采集discuz论坛。
+缺点：过于专一，兼容性不好。
 </code></pre>
 
-<p>这四条DD命令区别在于内存中写缓存的处理方式。</p>
-
-<h2 id="dd-bs64k-count4k-ifdevzero-oftest">1.dd bs=64k count=4k if=/dev/zero of=test</h2>
-<p>　　没有加任何参数，dd默认的方式不包括“同步(sync)”命令。也就是说，dd命令完成前并没有让系统真正把文件写到磁盘上。所以以上命令只是单纯地把这128MB的数据读到内存缓冲当中（写缓存[write cache]）。所以你得到的将是一个超级快的速度。因为其实dd给你的只是读取速度，直到dd完成后系统才开始真正往磁盘上写数据，但这个速度你是看不到了。所以如果这个速度很快，没有什么作用。
-实际运行结果：
-268435456 bytes (268 MB) copied, 1.3529 seconds, 198 MB/s</p>
-
-<h2 id="dd-bs64k-count4k-ifdevzero-oftest-sync">2.dd bs=64k count=4k if=/dev/zero of=test; sync</h2>
-<p>　　和前面1中的完全一样。分号隔开的只是先后两个独立的命令。当sync命令准备开始往磁盘上真正写入数据的时候，前面dd命令已经把错误的“写入速度”值显示在屏幕上了。所以你还是得不到真正的写入速度。
-实际运行结果：
-268435456 bytes (268 MB) copied, 0.522815 seconds, 513 MB/s</p>
-
-<h2 id="dd-bs64k-count4k-ifdevzero-oftest-convfdatasync">3.dd bs=64k count=4k if=/dev/zero of=test conv=fdatasync</h2>
-<p>　　加入这个参数后，dd命令执行到最后会真正执行一次“同步(sync)”操作，所以这时候你得到的是读取这128M数据到内存并写入到磁盘上所需的时间，这样算出来的时间才是比较符合实际使用结果的。
-实际运行结果：
-268435456 bytes (268 MB) copied, 2.8046 seconds, 95.7 MB/s</p>
-
-<h2 id="dd-bs64k-count4k-ifdevzero-oftest-oflagdsync">4.dd bs=64k count=4k if=/dev/zero of=test oflag=dsync</h2>
-<p>　　加入这个参数后，dd在执行时每次都会进行同步写入操作。也就是说，这条命令每次读取64k后就要先把这64k写入磁盘，然后再读取下面这64k，一共重复128次。这可能是最慢的一种方式了，因为基本上没有用到写缓存(write cache)。
-实际运行结果：
-268435456 bytes (268 MB) copied, 3.40069 seconds, 78.9 MB/s
-　　一般来说，第四种方法是最严格的，可以模拟数据库的插入操作，所以很慢，也是用来测试vps硬盘性能标准的一条标杆，一般来说测试结果，如果超过10M，对正常建站就无影响。超过50M，就是非常给力状态，看了这个vps硬盘性能非常的好，DD速度达到了78.9MB/s。
-　　在这几条命令中，bs=64k表示同时读入/输出的块大小为64k个字节，count=4k表示拷贝块的个数为4000个，如果测试再严格一点，我们运行1G数据量的DD：
-dd if=/dev/zero of=test bs=64k count=16k oflag=dsync
-表示每个块大小为64k个字节，测试16k个数量的块，实际测试结果：
-1073741824 bytes (1.1 GB) copied, 18.9098 seconds, 56.8 MB/s</p>
-
+<p>总结：追求简单易用，功能较为齐全的，可以选择云采集。追求功能非常齐全的，可以选择火车头。云采集和火车头都能迅速采集很多的资源，充实网站内容。如果做论坛，那选择三人行，可以实现采集论坛，回复，搬家等多项论坛功能。长期做站，可以选择ET或云采集，花点时间，弄懂，是个长期受益的事情，他们都可以像开QQ一样，长期运行，不费内存，自动采集更新。至于海纳，似乎不写规则，上手容易，但是对文章的发布上，比较麻烦。另外，这里只讲了六大主要的采集工具，其实还有网络矿工、网络神采、易采、gooseeker、soukey、小猪采集器、超级采集、千帆采集等等，这些采集器也是各有优缺点，但总体上来说属于采集工具领域的第二梯队，就不一一再讲了。。。。。。</p>
 
 	  </div>
 
@@ -200,8 +210,8 @@ dd if=/dev/zero of=test bs=64k count=16k oflag=dsync
 		  
 		  
 			 
-				<li><a href="/category.html#hardware">
-					hardware <span>(2)</span>
+				<li><a href="/category.html#seo">
+					seo <span>(3)</span>
 					
 				</a></li>
 			
@@ -216,15 +226,15 @@ dd if=/dev/zero of=test bs=64k count=16k oflag=dsync
 		  
 			 
 				<li>
-					<a href="/tag.html#Hardware">
-					Hardware <span>(2)</span>
+					<a href="/tag.html#seo">
+					seo <span>(3)</span>
 					,
 					</a>
 				</li>
 			 
 				<li>
-					<a href="/tag.html#storage">
-					storage <span>(2)</span>
+					<a href="/tag.html#collet">
+					collet <span>(1)</span>
 					
 					</a>
 				</li>
@@ -273,10 +283,10 @@ dd if=/dev/zero of=test bs=64k count=16k oflag=dsync
 
 		<ul class="pager">
 		  
-		  <li class="previous"><a href="/resource/2015/01/21/git-resource.html" title="Git学习及下载资源">&larr; Previous</a></li>
+		  <li class="previous"><a href="/linux/2015/04/20/linux-curl.html" title="curl 命令行下载工具使用方法小结">&larr; Previous</a></li>
 		  
 		  
-		  <li class="next"><a href="/deploy/2015/03/03/puppet.html" title="使用puppet去部署openstack">Next &rarr;</a></li>
+		  <li class="next"><a href="/seo/2015/04/21/web-migrate.html" title="织梦（DEDECMS）网站程序及数据库迁移搬家">Next &rarr;</a></li>
 		  
 		</ul>
 
