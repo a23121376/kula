@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Git学习及下载资源</title>
+	<title>织梦（DEDECMS）网站程序及数据库迁移搬家</title>
 	
 	<meta name="author" content="kula41">
 
@@ -137,7 +137,7 @@
 
 	<div class="col-sm-9 typo" style="background-color:#fff;">
 		<div class="col-sm-8" style=" padding: 40px 0; "><div class="page-header">
-  <h1>Git学习及下载资源 </h1>
+  <h1>织梦（DEDECMS）网站程序及数据库迁移搬家 </h1>
 </div>
 	
 <article>
@@ -145,29 +145,31 @@
 	<div class="col-sm-12">
   	<small>
 	   
-	   January 
+	   April 
 	   21st,
 	     
 	   2015
 	 </small>
 	  <div class="article_body" id="article_body">
-	  <p>保存Git源码管理原理学习及下载链接</p>
+	  <p>织梦（DEDECMS）网站程序及数据库迁移搬家</p>
 
-<p>Git学习资源</p>
+<p>首先我们将目的地的数据库账号密码获取到，并且保证持有一个数据库或拥有创建数据库的权限。</p>
 
-<ul>
-  <li><a href="http://developer.51cto.com/art/201111/302195.htm">http://developer.51cto.com/art/201111/302195.htm</a></li>
-  <li><a href="http://blog.csdn.net/luckarecs/article/details/7427605">http://blog.csdn.net/luckarecs/article/details/7427605</a></li>
-  <li><a href="http://www.open-open.com/lib/list/282?pn=2">http://www.open-open.com/lib/list/282?pn=2</a></li>
-</ul>
+<p>1、首先登录织梦的后台，进入到“系统》数据库备份/还原”栏目。</p>
 
-<p>Git下载链接</p>
+<p>2、如果之前有备份过数据，就需要将织梦程序根目录下的data文件夹下的backupdata文件夹改名为其他名称，如”_backupdata”。</p>
 
-<ul>
-  <li><a href="http://msysgit.github.com/">http://msysgit.github.com/</a></li>
-  <li><a href="http://code.google.com/p/gitextensions/downloads/list">http://code.google.com/p/gitextensions/downloads/list</a></li>
-  <li><a href="http://gitscc.codeplex.com/">http://gitscc.codeplex.com/</a></li>
-</ul>
+<p>3、全选所有的表，根据情况选择MYSQL版本，按照默认选项提交备份。</p>
+
+<p>4、备份成功后，将网站所有程序和目录上传到新的服务器。(主要文件有backupdata）</p>
+
+<p>5、然后将已上传程序根目录中install文件夹下的“index.php.bak”改名为“index.php”，并且将“module-install.php.bak”更改为“module-install.php”，删除“install_lock.txt”文件。</p>
+
+<p>6、在浏览器地址栏输入“你的域名/install/index.php”开始正常安装程序，其中数据库账号密码需填写目的地服务器的资料，网站程序的账号密码保持默认。</p>
+
+<p>7、登录网站程序后台“http://域名/后台路径”，进入到“系统》数据库备份/还原》右上角数据还原》左下角开始还原数据”。</p>
+
+<p>8、当数据完整的还原后，把网站程序中的install文件夹权限设置为不可读或直接删掉。</p>
 
 	  </div>
 
@@ -177,8 +179,8 @@
 		  
 		  
 			 
-				<li><a href="/category.html#resource">
-					resource <span>(1)</span>
+				<li><a href="/category.html#seo">
+					seo <span>(2)</span>
 					
 				</a></li>
 			
@@ -193,8 +195,15 @@
 		  
 			 
 				<li>
-					<a href="/tag.html#Git">
-					Git <span>(1)</span>
+					<a href="/tag.html#seo">
+					seo <span>(2)</span>
+					,
+					</a>
+				</li>
+			 
+				<li>
+					<a href="/tag.html#web">
+					web <span>(1)</span>
 					
 					</a>
 				</li>
@@ -243,10 +252,10 @@
 
 		<ul class="pager">
 		  
-		  <li class="previous"><a href="/hardware/2015/01/20/storage-raid.html" title="存储技术之RAID">&larr; Previous</a></li>
+		  <li class="previous"><a href="/linux/2015/04/20/linux-curl.html" title="curl 命令行下载工具使用方法小结">&larr; Previous</a></li>
 		  
 		  
-		  <li class="next"><a href="/hardware/2015/02/01/Linux-dd.html" title="Linux用DD命令测试磁盘读写速度">Next &rarr;</a></li>
+			<li class="next disabled"><a>Next &rarr;</a>
 		  
 		</ul>
 

@@ -7,6 +7,33 @@
 		<atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
+				<title>织梦（DEDECMS）网站程序及数据库迁移搬家</title>
+				<description>&lt;p&gt;织梦（DEDECMS）网站程序及数据库迁移搬家&lt;/p&gt;
+
+&lt;p&gt;首先我们将目的地的数据库账号密码获取到，并且保证持有一个数据库或拥有创建数据库的权限。&lt;/p&gt;
+
+&lt;p&gt;1、首先登录织梦的后台，进入到“系统》数据库备份/还原”栏目。&lt;/p&gt;
+
+&lt;p&gt;2、如果之前有备份过数据，就需要将织梦程序根目录下的data文件夹下的backupdata文件夹改名为其他名称，如”_backupdata”。&lt;/p&gt;
+
+&lt;p&gt;3、全选所有的表，根据情况选择MYSQL版本，按照默认选项提交备份。&lt;/p&gt;
+
+&lt;p&gt;4、备份成功后，将网站所有程序和目录上传到新的服务器。(主要文件有backupdata）&lt;/p&gt;
+
+&lt;p&gt;5、然后将已上传程序根目录中install文件夹下的“index.php.bak”改名为“index.php”，并且将“module-install.php.bak”更改为“module-install.php”，删除“install_lock.txt”文件。&lt;/p&gt;
+
+&lt;p&gt;6、在浏览器地址栏输入“你的域名/install/index.php”开始正常安装程序，其中数据库账号密码需填写目的地服务器的资料，网站程序的账号密码保持默认。&lt;/p&gt;
+
+&lt;p&gt;7、登录网站程序后台“http://域名/后台路径”，进入到“系统》数据库备份/还原》右上角数据还原》左下角开始还原数据”。&lt;/p&gt;
+
+&lt;p&gt;8、当数据完整的还原后，把网站程序中的install文件夹权限设置为不可读或直接删掉。&lt;/p&gt;
+</description>
+				<pubDate>Tue, 21 Apr 2015 00:00:00 +0800</pubDate>
+				<link>/seo/2015/04/21/web-migrate.html</link>
+				<guid isPermaLink="true">/seo/2015/04/21/web-migrate.html</guid>
+			</item>
+		
+			<item>
 				<title>curl 命令行下载工具使用方法小结</title>
 				<description>&lt;p&gt;curl 命令行下载工具使用方法小结&lt;/p&gt;
 
