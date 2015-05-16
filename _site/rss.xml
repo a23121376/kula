@@ -7,6 +7,21 @@
 		<atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
+				<title>自动生成26个英文字母的序列</title>
+				<description>&lt;p&gt;自动生成26个英文字母的序列&lt;/p&gt;
+
+&lt;p&gt;=SUBSTITUTE(ADDRESS(1,MOD(ROW(),270),4),1,””)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://files.c.excelhome.net/forum/201109/23/1126258xd08uxg9dlc9d00.gif&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://files.c.excelhome.net/forum/201109/23/113652w8dwxne7fgo7xz2o.gif&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+</description>
+				<pubDate>Sat, 16 May 2015 00:00:00 +0800</pubDate>
+				<link>/excel/2015/05/16/excel-char.html</link>
+				<guid isPermaLink="true">/excel/2015/05/16/excel-char.html</guid>
+			</item>
+		
+			<item>
 				<title>独立主机IIS6.0环境下配置rewrite（discuz为例）</title>
 				<description>&lt;p&gt;独立主机IIS6.0环境下配置rewrite（discuz为例）&lt;/p&gt;
 
@@ -710,17 +725,6 @@ dd if=/dev/zero of=test bs=64k count=16k oflag=dsync
 				<pubDate>Tue, 20 Jan 2015 00:00:00 +0800</pubDate>
 				<link>/hardware/2015/01/20/storage-raid.html</link>
 				<guid isPermaLink="true">/hardware/2015/01/20/storage-raid.html</guid>
-			</item>
-		
-			<item>
-				<title>Hello GitHub!</title>
-				<description>&lt;p&gt;github pages： &lt;a href=&quot;http://www.ruanyifeng.com/blog/2012/08/blogging_with_jekyll.html&quot;&gt;搭建一个免费的，无限流量的Blog—-github Pages和Jekyll入门&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;在上面这个链接的指引下，创建了kula这个项目，创建了主页。并且简单了解下来，发现GitHub不仅支持纯静态页面，还支持的是一种叫jekyll的静态页面生成模板引擎，似乎还不错。&lt;/p&gt;
-</description>
-				<pubDate>Mon, 19 Jan 2015 00:00:00 +0800</pubDate>
-				<link>/life/2015/01/19/hello-github.html</link>
-				<guid isPermaLink="true">/life/2015/01/19/hello-github.html</guid>
 			</item>
 		
 	</channel>
